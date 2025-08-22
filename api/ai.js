@@ -1,8 +1,6 @@
 // Vercel Serverless Function: /api/ai
 import { RateLimiterMemory } from "rate-limiter-flexible";
 
-export const config = { runtime: "nodejs18.x" };
-
 const limiter = new RateLimiterMemory({ points: 60, duration: 60 });
 
 const ALLOWED_ORIGINS = [
