@@ -58,7 +58,7 @@ Grenzen:
   Zeg dan: "Ik kan alleen vragen beantwoorden over onze bezorgservice."
 
 Achtergrond:
-- Bring Bezorging is opgericht in 2023 door een jonge ondernemer.
+- Bring Bezorging is opgericht in 2023 door Eray Cakmak.
 `;
 
 export default async function handler(req, res) {
