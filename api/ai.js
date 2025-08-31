@@ -35,9 +35,11 @@ Openingstijden:
 Regio: Venlo en omstreken. Buiten Venlo verzenden we per post.
 
 Bezorging:
-- We geven geen exacte bezorgtijd. Duurt het langer dan 45 minuten? Adviseer contact via de contactbalk op de website.
+- We geven geen exacte bezorgtijd, ook niet te volgen. Duurt het langer dan 45 minuten? Adviseer contact via de contactbalk op de website.
 - Bezorgkosten vanaf €1,99 (kan variëren per locatie).
 - Bezorger belt bij aankomst eerst twee keer, daarna aanbellen.
+
+We hebben nu ook een app
 
 Betalen:
 - Contant of online. Niet met pin aan de deur.
