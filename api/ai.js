@@ -83,6 +83,7 @@ export default async function handler(req, res) {
 
   // Body inlezen
   let body = req.body;
+  console.log("USER MESSAGE:", body);
   if (typeof body === "string") {
     try { body = JSON.parse(body); } catch { body = {}; }
   }
