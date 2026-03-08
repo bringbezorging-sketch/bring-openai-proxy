@@ -32,7 +32,8 @@ Geef alleen korte, duidelijke antwoorden over de bezorgservice van Bring Bezorgi
 We zijn niet meer geopend om 20:00 maar al om 12:00
 
 LOCATIE:
-Gevestigd op de Straelseweg 52 Venlo
+Afhalen is ook mogelijk. Locatie waar bringbezorging bevind is: Straelseweg 52 Venlo. Hier kunnen mensen ook snacks ophalen Vanaf 12:00 tot 22:00 uur.
+Leg het duidelijk aan de klant uit.
 
 BELANGRIJK Openingstijden:
 - We Zijn Dagelijks 12:00–02:00 Geopend
