@@ -1,4 +1,4 @@
-// /api/ai.js  — Vercel Serverless Function (Node)
+// /api/ai.js — Vercel Serverless Function (Node)
 
 // ====== CORS (toestaan vanaf jouw domeinen) ======
 const ALLOWED_ORIGINS = [
@@ -11,7 +11,6 @@ const ALLOWED_ORIGINS = [
 function corsHeaders(origin) {
   const ok = !!origin && (
     ALLOWED_ORIGINS.includes(origin) ||
-    // wildcard support: https://*.myshopify.com
     ALLOWED_ORIGINS.some((o) => o.startsWith("https://*.") && origin.endsWith(o.slice(8)))
   );
 
@@ -24,78 +23,77 @@ function corsHeaders(origin) {
   };
 }
 
-// ====== Jouw vaste regels / beleid als system prompt ======
+// ====== Systeem Instructies ======
 const SYSTEM_PROMPT = `
 Je bent een vrolijke en informele klantenservice-medewerker van Bring Bezorging.
-Geef alleen korte, duidelijke antwoorden over de bezorgservice van Bring Bezorging.
+Geef alleen korte, duidelijke antwoorden over de bezorgservice.
 
-We zijn niet meer geopend om 20:00 maar al om 12:00
+OPENINGSTIJDEN:
+- Dagelijks geopend van 12:00 tot 02:00 uur.
+- Vrijdag & Zaterdag extra lang geopend tot 04:00 uur.
 
-LOCATIE:
-Afhalen is ook mogelijk. Locatie waar bringbezorging bevind is: Straelseweg 52 Venlo. Hier kunnen mensen ook snacks ophalen Vanaf 12:00 tot 22:00 uur.
-Leg het duidelijk aan de klant uit.
+LOCATIE & AFHALEN:
+- Afhalen kan bij: Straelseweg 52, Venlo (van 12:00 tot 22:00 uur). Leg dit duidelijk uit aan de klant.
 
-BELANGRIJK Openingstijden:
-- We Zijn Dagelijks 12:00–02:00 Geopend
-- En Vrijdag & zaterdag t/m 04:00
-Regio: Venlo en omstreken. Buiten Venlo verzenden we per post.
+BEZORGING:
+- Regio: Venlo en omstreken. Buiten Venlo verzenden we per post.
+- Bezorgtijd: Geen exacte tijd of tracking beschikbaar. Duurt het langer dan 45 min? Adviseer contact via de website.
+- Kosten: Vanaf €2,99 (varieert per locatie).
+- Werkwijze: De bezorger belt bij aankomst eerst twee keer, daarna wordt er pas aangebeld.
 
-Bezorging:
-- We geven geen exacte bezorgtijd, ook niet te volgen. Duurt het langer dan 45 minuten? Adviseer contact via de contactbalk op de website.
-- Bezorgkosten vanaf €2,99 (kan variëren per locatie).
-- Bezorger belt bij aankomst eerst twee keer, daarna aanbellen.
-
-We hebben nu ook een app
-
-Betalen:
-- Contant of online. Niet met pin aan de deur.
-
-Stijl:
-- Gezellig, maar antwoorden kort houden.
-- Geen emoji’s met eten (🍕🍔🍟🥤).
-
-Acties:
+EXTRA:
+- We hebben nu een eigen App!
+- Betalen: Contant of online (iDEAL etc.). Let op: NIET pinnen aan de deur.
 - Kortingscode: BringOnTop.
-- Hou onze socials in de gaten voor de beste acties. @bringbezorging op snapchat, @bringbezorging op instagram
-Grenzen:
-- Geen antwoorden over scheldwoorden, seks, politiek, religie, andere bedrijven of persoonlijke meningen.
-  Zeg dan: "Ik kan alleen vragen beantwoorden over onze bezorgservice."
+- Socials: @bringbezorging op Instagram en Snapchat.
 
-Achtergrond:
-- Bring Bezorging is opgericht in 2023 door Eray Cakmak.
+STIJL & GRENZEN:
+- Kort en gezellig antwoorden. Geen emoji's van eten gebruiken.
+- Bij vragen over politiek, religie of beledigingen zeg je: "Ik kan alleen vragen beantwoorden over onze bezorgservice."
+- Opgericht in 2023 door Eray Cakmak.
 `;
 
 export default async function handler(req, res) {
   const origin = req.headers.origin || "";
   const headers = corsHeaders(origin);
 
-  // Preflight
+  // 1. Preflight (voor browsers)
   if (req.method === "OPTIONS") {
     Object.entries(headers).forEach(([k, v]) => res.setHeader(k, v));
     return res.status(204).end();
   }
 
+  // 2. Alleen POST toestaan
   if (req.method !== "POST") {
     Object.entries(headers).forEach(([k, v]) => res.setHeader(k, v));
     return res.status(405).json({ error: "Only POST allowed" });
   }
 
+  // 3. API Key check
   if (!process.env.OPENAI_API_KEY) {
     Object.entries(headers).forEach(([k, v]) => res.setHeader(k, v));
     return res.status(500).json({ error: "Missing OPENAI_API_KEY" });
   }
 
-  // Body inlezen
+  // 4. Body verwerken
   let body = req.body;
-  console.log("USER TEXT:", body?.messages?.[0]?.content);
   if (typeof body === "string") {
     try { body = JSON.parse(body); } catch { body = {}; }
   }
-  const { messages = [], model = "gpt-4.1-mini", temperature = 0.6 } = body || {};
 
-  // OpenAI payload
+  const { messages = [], model = "gpt-4o-mini", temperature = 0.6 } = body || {};
+
+  // 5. LOGGING: Hiermee zie je de klantvragen in je Vercel Dashboard
+  const lastUserMessage = messages.filter(m => m.role === 'user').pop();
+  if (lastUserMessage) {
+    console.log("--- CHAT LOG ---");
+    console.log("KLANT VRAAGT:", lastUserMessage.content);
+    console.log("-----------------");
+  }
+
+  // 6. OpenAI aanroep voorbereiden
   const payload = {
-    model,
+    model, // Staat nu op gpt-4o-mini (de goedkoopste/snelste)
     temperature,
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
@@ -114,10 +112,14 @@ export default async function handler(req, res) {
     });
 
     const data = await resp.json();
+    
+    // Voeg CORS headers toe aan het antwoord
     Object.entries(headers).forEach(([k, v]) => res.setHeader(k, v));
-    res.status(resp.ok ? 200 : resp.status).json(data);
+    
+    return res.status(resp.ok ? 200 : resp.status).json(data);
   } catch (err) {
+    console.error("PROXY ERROR:", err);
     Object.entries(headers).forEach(([k, v]) => res.setHeader(k, v));
-    res.status(500).json({ error: "Proxy error", details: String(err?.message || err) });
+    return res.status(500).json({ error: "Proxy error", details: String(err?.message || err) });
   }
 }
