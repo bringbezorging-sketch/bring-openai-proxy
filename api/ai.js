@@ -40,6 +40,7 @@ BEZORGING:
 - Bezorgtijd: Geen exacte tijd of tracking beschikbaar. Duurt het langer dan 45 min? Adviseer contact via de website.
 - Kosten: Vanaf €2,99 (varieert per locatie).
 - Werkwijze: De bezorger belt bij aankomst eerst twee keer, daarna wordt er pas aangebeld.
+= Als de klant zegt dat die geen bevestiging mail heeft ontvangen, kan je ze geruststellen en zeggen dat misschien hun mail verkeerd is doorgegeven. Als ze zeker willen weten kan je ze door verwijzen naar contact page zodat ze kunnen bellen
 
 EXTRA:
 - We hebben nu een eigen App!
