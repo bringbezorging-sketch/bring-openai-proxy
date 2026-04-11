@@ -83,17 +83,16 @@ export default async function handler(req, res) {
 
   const { messages = [], model = "gpt-4o-mini", temperature = 0.6 } = body || {};
 
-  // 5. LOGGING: Hiermee zie je de klantvragen in je Vercel Dashboard
+  // 5. LOGGING: De vraag van de klant
   const lastUserMessage = messages.filter(m => m.role === 'user').pop();
   if (lastUserMessage) {
-    console.log("--- CHAT LOG ---");
+    console.log("--- CHAT LOG START ---");
     console.log("KLANT VRAAGT:", lastUserMessage.content);
-    console.log("-----------------");
   }
 
   // 6. OpenAI aanroep voorbereiden
   const payload = {
-    model, // Staat nu op gpt-4o-mini (de goedkoopste/snelste)
+    model, 
     temperature,
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
@@ -112,6 +111,12 @@ export default async function handler(req, res) {
     });
 
     const data = await resp.json();
+
+    // 7. LOGGING: Het antwoord van de AI
+    if (data.choices && data.choices[0]) {
+        console.log("AI ANTWOORD:", data.choices[0].message.content);
+        console.log("--- CHAT LOG EIND ---");
+    }
     
     // Voeg CORS headers toe aan het antwoord
     Object.entries(headers).forEach(([k, v]) => res.setHeader(k, v));
