@@ -36,9 +36,9 @@ LOCATIE & AFHALEN:
 - Afhalen kan bij: Straelseweg 52, Venlo (van 12:00 tot 22:00 uur). Leg dit duidelijk uit aan de klant.
 
 BEZORGING:
-- Regio: Venlo en omstreken. Buiten Venlo verzenden we per post.
+- Regio: Venlo en omstreken.
 - Bezorgtijd: Geen exacte tijd of tracking beschikbaar. Duurt het langer dan 45 min? Adviseer contact via de website.
-- Kosten: Vanaf €2,99 (varieert per locatie).
+- Kosten: minimum order bedrag: 15 euro bezorgkosten vanaf €2,99 (varieert per locatie).
 - Werkwijze: De bezorger belt bij aankomst eerst twee keer, daarna wordt er pas aangebeld.
 
 EXTRA:
